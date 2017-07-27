@@ -1,5 +1,6 @@
 package com.example.notes2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
@@ -46,10 +47,12 @@ public class NotesActivity extends AppCompatActivity {
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Snackbar.make(recyclerView, "this is text number "+position, BaseTransientBottomBar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Snackbar.make(recyclerView, "this is text number "+position, BaseTransientBottomBar.LENGTH_LONG)
+                 //       .setAction("Action", null).show();
+                startActivity(new Intent(NotesActivity.this, WriteNote.class));
 
-                addNote();
+
+                //addNote();
             }
         });
 
