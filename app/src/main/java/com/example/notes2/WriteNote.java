@@ -32,9 +32,27 @@ import static com.example.notes2.R.id.title_write;
 public class WriteNote extends AppCompatActivity {
 
     String fileName;
-    NotesActivity fact = new NotesActivity();
+
+    //ToDo: make list send number and the number can be used to call the list. make fab call the list size plus one and use empty variable to make a new note
+
+    public void save_content(View view) {
+
+        EditText title= (EditText) findViewById(title_write);
+        String titleText = title.getText().toString();
+
+        Bundle extras = getIntent().getExtras();
+        int position = extras.getInt("EXTRA_POSITION");
+
+        Intent toNoteList= new Intent(WriteNote.this, NotesActivity.class);
 
 
+        toNoteList.putExtra("EXTRA_TITLE_TEXT", titleText);
+        //toNoteList.putExtra("EXTRA_LIST", );
+        startActivity(toNoteList);
+
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +65,12 @@ public class WriteNote extends AppCompatActivity {
         journal.append(readFromFile(this));
 
 
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             int position = extras.getInt("EXTRA_POSITION");
             //The key argument here must match that used in the other activity
 
-           fileName=fileNumber(position);
+
             EditText title= (EditText) findViewById(title_write);
             title.append("This is the title"+position);
         }

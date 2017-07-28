@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/content_write"
             android:layout_centerHorizontal="true"
-            android:onClick="ww"
+            android:onClick="save_content"
             android:text="@string/btn_save"/>
 
     </RelativeLayout>

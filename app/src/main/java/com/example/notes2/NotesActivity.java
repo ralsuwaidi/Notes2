@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import com.example.notes2.Notes.ItemClickSupport;
 import com.example.notes2.Notes.Note;
@@ -19,6 +20,8 @@ import com.example.notes2.Notes.NoteAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.notes2.R.id.title_write;
 
 public class NotesActivity extends AppCompatActivity {
 
@@ -54,7 +57,7 @@ public class NotesActivity extends AppCompatActivity {
                 writeIntent.putExtra("EXTRA_POSITION", position);
                 startActivity(writeIntent);
 
-                //addNote();
+
             }
         });
 
@@ -62,6 +65,8 @@ public class NotesActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
 
 
                 int noteSize=noteList.size();
@@ -72,18 +77,10 @@ public class NotesActivity extends AppCompatActivity {
         });
 
         addNote("start", "date");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
-        addNote("second", "date2");
+
+
+
+
     }
 
     public void addNote(String title, String date) {
