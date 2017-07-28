@@ -38,6 +38,16 @@
             android:layout_below="@+id/title_write"
             android:backgroundTint="@android:color/transparent"
             />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/content_write"
+            android:layout_centerHorizontal="true"
+            android:onClick="ww"
+            android:text="@string/btn_save"/>
+
     </RelativeLayout>
 
 

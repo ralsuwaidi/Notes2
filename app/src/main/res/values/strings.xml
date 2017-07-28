@@ -5,4 +5,5 @@
     <string name="title_activity_write_note">WriteNote</string>
     <string name="write_note_title_hint">Title</string>
     <string name="write_note_text_hint">Journal</string>
+    <string name="btn_save">save</string>
 </resources>

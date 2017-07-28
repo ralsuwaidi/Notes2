@@ -1,6 +1,7 @@
 package com.example.notes2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,9 +24,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 
+import static android.R.id.button1;
+import static com.example.notes2.R.id.btn_save;
 import static com.example.notes2.R.id.content_write;
+import static com.example.notes2.R.id.title_write;
 
 public class WriteNote extends AppCompatActivity {
+
+    String fileName;
+    NotesActivity fact = new NotesActivity();
+
 
 
     @Override
@@ -38,24 +47,28 @@ public class WriteNote extends AppCompatActivity {
         journal.append(readFromFile(this));
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            int position = extras.getInt("EXTRA_POSITION");
+            //The key argument here must match that used in the other activity
 
+           fileName=fileNumber(position);
+            EditText title= (EditText) findViewById(title_write);
+            title.append("This is the title"+position);
+        }
 
 
     }
 
     private void writeToFile(String data,Context context) {
+        Bundle extras = getIntent().getExtras();
+
+            int position = extras.getInt("EXTRA_POSITION");
+            //The key argument here must match that used in the other activity
+
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileNumber(position), Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
         }
@@ -68,9 +81,13 @@ public class WriteNote extends AppCompatActivity {
     private String readFromFile(Context context) {
 
         String ret = "";
+        Bundle extras = getIntent().getExtras();
+
+        int position = extras.getInt("EXTRA_POSITION");
+
 
         try {
-            InputStream inputStream = context.openFileInput("config.txt");
+            InputStream inputStream = context.openFileInput(fileNumber(position));
 
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -79,7 +96,7 @@ public class WriteNote extends AppCompatActivity {
                 StringBuilder stringBuilder = new StringBuilder();
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
+                    stringBuilder.append(receiveString).append("\n");
                 }
 
                 inputStream.close();
@@ -105,11 +122,25 @@ public class WriteNote extends AppCompatActivity {
         EditText journal = (EditText) findViewById(content_write);
         String journalText = journal.getText().toString();
 
+        EditText title= (EditText) findViewById(title_write);
+        String titleText = title.getText().toString();
 
+        //fact.addNote("ss", "ww");
         writeToFile(journalText, this);
+
+
 
 
         return;
     }
+
+
+    public String fileNumber(int position){
+        String file = "note"+position+".txt";
+        return file;
+    }
+
+
+
 
 }

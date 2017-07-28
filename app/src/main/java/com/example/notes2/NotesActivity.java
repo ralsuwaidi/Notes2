@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.notes2.Notes.ItemClickSupport;
@@ -24,9 +25,6 @@ public class NotesActivity extends AppCompatActivity {
     private List<Note> noteList = new ArrayList<>();
     public RecyclerView recyclerView;
     private NoteAdapter mAdapter;
-
-
-
 
 
     @Override
@@ -44,13 +42,17 @@ public class NotesActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 //Snackbar.make(recyclerView, "this is text number "+position, BaseTransientBottomBar.LENGTH_LONG)
                  //       .setAction("Action", null).show();
-                startActivity(new Intent(NotesActivity.this, WriteNote.class));
 
+
+                Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
+                writeIntent.putExtra("EXTRA_POSITION", position);
+                startActivity(writeIntent);
 
                 //addNote();
             }
@@ -60,21 +62,36 @@ public class NotesActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+
+                int noteSize=noteList.size();
+                Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
+                writeIntent.putExtra("EXTRA_POSITION", noteSize);
+               startActivity(writeIntent);
             }
         });
-        addNote();
 
+        addNote("start", "date");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
+        addNote("second", "date2");
     }
 
-    private void addNote() {
-        Note note = new Note("Title this should be", "Date this is");
+    public void addNote(String title, String date) {
+        Note note = new Note(title, date);
         noteList.add(note);
 
         mAdapter.notifyDataSetChanged();
     }
-
 
 
 
