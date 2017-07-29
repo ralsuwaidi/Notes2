@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,7 +37,12 @@ import static com.example.notes2.R.id.title_write;
 public class WriteNote extends AppCompatActivity {
 
 
+public void delete_button(View view){
+    Bundle extras = getIntent().getExtras();
 
+    int position = extras.getInt("EXTRA_POSITION");
+    NotesActivity.noteList.remove(position);
+}
 
 
 

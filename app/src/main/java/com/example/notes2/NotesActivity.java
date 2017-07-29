@@ -29,11 +29,16 @@ import java.util.List;
 
 public class NotesActivity extends AppCompatActivity{
 
-    public List<Note> noteList = new ArrayList<>();
+    public static final List<Note> noteList = new ArrayList<>();
     public RecyclerView recyclerView;
     private NoteAdapter mAdapter;
     public static final String PREFS_NAME = "MyPrefsFile";
     private int listSize;
+    private boolean start;
+
+    public NotesActivity(){
+          start=true;
+    }
 
 
     @Override
@@ -55,21 +60,6 @@ public class NotesActivity extends AppCompatActivity{
         SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, 0);
         listSize = sharedPref.getInt("listSize", 0);
 
-
-
-        //get intent from the newNote activity
-        Bundle extras = getIntent().getExtras();
-        if(extras!=null) {
-            boolean isNew = extras.getBoolean("IS_NEW");
-            if (isNew) {
-
-                extras = getIntent().getExtras();
-                String titleText = extras.getString("EXTRA_TITLE_TEXT");
-                addNote(titleText, "date");
-
-
-            }
-        }
 
 
         //when a recycler view item is clicked
@@ -107,24 +97,24 @@ public class NotesActivity extends AppCompatActivity{
                 editor.commit();
 
                 //start a new activity
-                int noteSize=noteList.size();
+                int noteSize=listSize;
                 Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
                 writeIntent.putExtra("EXTRA_POSITION", noteSize);
 
                 startActivity(writeIntent);
 
-
-
-
             }
         });
 
         //can use this space to populate note list
-
+        noteList.clear();
+        while(start){
     for (int i = 0; i < listSize; i++) {
+
         addNote(readFromTitle(getApplicationContext(),i), "date");
     }
-
+    start=false;
+        }
 
     }
 
