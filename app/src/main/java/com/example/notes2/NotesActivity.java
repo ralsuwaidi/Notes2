@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 
@@ -17,18 +18,22 @@ import com.example.notes2.Notes.ItemClickSupport;
 import com.example.notes2.Notes.Note;
 import com.example.notes2.Notes.NoteAdapter;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class NotesActivity extends AppCompatActivity {
+public class NotesActivity extends AppCompatActivity{
 
     public List<Note> noteList = new ArrayList<>();
     public RecyclerView recyclerView;
     private NoteAdapter mAdapter;
     public static final String PREFS_NAME = "MyPrefsFile";
     private int listSize;
-
 
 
     @Override
@@ -88,23 +93,23 @@ public class NotesActivity extends AppCompatActivity {
             }
         });
 
+
         //float action button setting in the note list
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //save shared pref
                 SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, 0);
                 SharedPreferences.Editor editor= sharedPref.edit();
                 editor.putInt("listSize", listSize+1);
                 editor.commit();
 
+                //start a new activity
                 int noteSize=noteList.size();
-
-                boolean isNew = true;
                 Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
                 writeIntent.putExtra("EXTRA_POSITION", noteSize);
-                writeIntent.putExtra("IS_NEW", isNew);
 
                 startActivity(writeIntent);
 
@@ -116,10 +121,9 @@ public class NotesActivity extends AppCompatActivity {
 
         //can use this space to populate note list
 
-        for(int i=0; i<listSize;i++){
-            addNote("Title "+i, "Date"+i);
-        }
-
+    for (int i = 0; i < listSize; i++) {
+        addNote(readFromTitle(getApplicationContext(),i), "date");
+    }
 
 
     }
@@ -130,6 +134,43 @@ public class NotesActivity extends AppCompatActivity {
         noteList.add(note);
 
         mAdapter.notifyDataSetChanged();
+    }
+
+    //acess file title depending on the position
+    private String titleNumber(int position){
+        String file = "title"+position+".txt";
+        return file;
+    }
+
+    //read title from the file
+    private String readFromTitle(Context context, int i) {
+
+        String ret = "";
+
+        try {
+            InputStream inputStream = context.openFileInput(titleNumber(i));
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString).append("\n");
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
     }
 
 

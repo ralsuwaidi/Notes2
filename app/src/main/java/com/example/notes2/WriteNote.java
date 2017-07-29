@@ -37,6 +37,8 @@ public class WriteNote extends AppCompatActivity {
 
 
 
+
+
     //when the save button is clicked
     public void save_content(View view) {
 
@@ -50,19 +52,13 @@ public class WriteNote extends AppCompatActivity {
         writeToFile2(titleText, this);
 
         Intent toNoteList= new Intent(WriteNote.this, NotesActivity.class);
-
-        Bundle extras = getIntent().getExtras();
-        boolean isNew = extras.getBoolean("IS_NEW");
-        if (isNew){
-            toNoteList.putExtra("IS_NEW", isNew);
-        }
-
         toNoteList.putExtra("EXTRA_TITLE_TEXT", titleText);
-        //toNoteList.putExtra("EXTRA_LIST", );
+
         startActivity(toNoteList);
 
 
     }
+
 
     //when the activity starts
     @Override
@@ -77,10 +73,10 @@ public class WriteNote extends AppCompatActivity {
 
         if(isNew==false){
             EditText journal = (EditText) findViewById(content_write);
-            journal.append(readFromFile(this));
+            journal.append(readFromFile(getApplicationContext()));
 
             EditText titleText = (EditText) findViewById(title_write);
-            titleText.append(readFromTitle(this));
+            titleText.append(readFromTitle(getApplicationContext()));
         }
 
     }
@@ -155,8 +151,10 @@ public class WriteNote extends AppCompatActivity {
         return ret;
     }
 
+
+
     //read title from the file
-    private String readFromTitle(Context context) {
+    public String readFromTitle(Context context) {
 
         String ret = "";
         Bundle extras = getIntent().getExtras();
