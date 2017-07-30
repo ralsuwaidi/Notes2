@@ -36,15 +36,19 @@ import static android.widget.LinearLayout.VERTICAL;
 
 public class NotesActivity extends AppCompatActivity{
 
+    //recyclerview setup
     public static final List<Note> noteList = new ArrayList<>();
     public RecyclerView recyclerView;
     private NoteAdapter mAdapter;
+
+    //private folder setup
     public static final String PREFS_NAME = "MyPrefsFile";
     public static int listSize;
     private boolean start;
+
     public static final List<String> date=new ArrayList<>();
-    String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-    public static Set<String> set = new HashSet<String>();
+    public static Set<String> titleSet = new HashSet<String>();
+    private List<String> titlesList = new ArrayList<>();
 
 
     public NotesActivity(){
@@ -68,12 +72,15 @@ public class NotesActivity extends AppCompatActivity{
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+
         //get shared pref
         SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        listSize = sharedPref.getInt("listSize", MODE_PRIVATE);
-        Set d=sharedPref.getStringSet("dateList", set);
+        Set titlesSet=sharedPref.getStringSet(WriteNote.TITLES_SET, titleSet);
+        titlesList.addAll(titlesSet);
 
-
+        for (int i=0; i<titlesList.size();i++){
+            addNote(titlesList.get(i),"dd");
+        }
 
 
 
@@ -85,11 +92,7 @@ public class NotesActivity extends AppCompatActivity{
                  //       .setAction("Action", null).show();
 
 
-                Bundle extras = getIntent().getExtras();
-                if(extras!=null){
-                    boolean isNew = extras.getBoolean("IS_NEW");
 
-                }
                 Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
                 writeIntent.putExtra("EXTRA_POSITION", position);
                 startActivity(writeIntent);
@@ -105,39 +108,26 @@ public class NotesActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
+                /*
                 //save shared pref
                 SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, 0);
                 SharedPreferences.Editor editor= sharedPref.edit();
                 editor.putInt("listSize", listSize+1);
                 editor.commit();
+                */
+
 
                 //start a new activity
-                int noteSize=listSize;
+                //int noteSize=listSize;
                 Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
-                writeIntent.putExtra("EXTRA_POSITION", noteSize);
+                //writeIntent.putExtra("EXTRA_POSITION", noteSize);
 
                 startActivity(writeIntent);
 
             }
         });
 
-        //can use this space to populate note list
-        noteList.clear();
-        date.addAll(d);
 
-        while(start){
-    for (int i = 0; i < listSize; i++) {
-
-        if (readFromTitle(getApplicationContext(),i).equals(null)||readFromTitle(getApplicationContext(),i).equals("")){
-
-        }else{
-            addNote(readFromTitle(getApplicationContext(),i), date.get(i));
-        }
-
-    }
-    start=false;
-
-        }
 
     }
 
@@ -150,7 +140,7 @@ public class NotesActivity extends AppCompatActivity{
     }
 
 
-    //acess file title depending on the position
+    //access file title depending on the position
     private String titleNumber(int position){
         String file = "title"+position+".txt";
         return file;

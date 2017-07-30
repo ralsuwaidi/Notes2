@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,39 +27,55 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.example.notes2.NotesActivity.PREFS_NAME;
-import static com.example.notes2.NotesActivity.set;
 import static com.example.notes2.R.id.content_write;
 import static com.example.notes2.R.id.title_write;
 
 public class WriteNote extends AppCompatActivity {
 
     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+    List<String> titlesList = new ArrayList<>();
+    String titleText;
+    String contentText;
+    Set<String> titleStringSet;
+    public static String TITLES_SET="titlesSet";
+
 
 public void delete_button(){
 
+    /*
     //get position
     Bundle extras = getIntent().getExtras();
     int position = extras.getInt("EXTRA_POSITION");
+     */
 
+    /*
     //delete title, content from file
     File dir = getFilesDir();
     File fileTitle = new File(dir, "title"+position+".txt");
     File fileContent = new File(dir, "note"+position+".txt");
     fileTitle.delete();
     fileContent.delete();
+     */
 
+    /*
     //decrease list size
     SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
     SharedPreferences.Editor editor= sharedPref.edit();
     editor.putInt("listSize", NotesActivity.listSize-1);
     editor.commit();
+     */
 
+    /*
     NotesActivity.date.remove(position);
     NotesActivity.noteList.remove(position);
+     */
 
     Intent toNoteList= new Intent(WriteNote.this, NotesActivity.class);
     startActivity(toNoteList);
@@ -73,52 +86,29 @@ public void delete_button(){
     //when the save button is clicked
     public void save_content(View view) {
 
-        NotesActivity.date.add(currentDateTimeString);
+        // 30/07/2017  save title text to string and add to string array
+        EditText titleEditText = (EditText) findViewById(title_write);
+        EditText contentEditText = (EditText) findViewById(content_write);
+        titleText = titleEditText.getText().toString();
+        contentText=contentEditText.getText().toString();
+        titlesList.add(titleText);
+
+        // 30/07/2017 save to a shared pref set
+        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor= sharedPref.edit();
+        Set<String> titleStringSet = new HashSet<>(titlesList);
+        editor.putStringSet(TITLES_SET, titleStringSet);
+        editor.commit();
+
+        // 30/07/2017 make a new save file with title as the name of the file, put content inside it
+        String titleFileName=removeSpaces(titleText);
+        writeToFile(contentText, this, titleFileName);
 
 
 
-
-        EditText journal = (EditText) findViewById(content_write);
-        String journalText = journal.getText().toString();
-
-        EditText title= (EditText) findViewById(title_write);
-        String titleText = title.getText().toString();
-
-        if(titleText.equals(null)||titleText.equals("")){
-
-        }else{
-
-        }
-
-
-
+        // 30/07/2017 start the new activity to return to the main list menu
         Intent toNoteList= new Intent(WriteNote.this, NotesActivity.class);
-
-        if (titleText.equals(null)||titleText.equals("")){
-
-
-
-           // editor.putInt("listSize", NotesActivity.listSize-1);
-            //editor.commit();
-
-        }else{
-            set.addAll(NotesActivity.date);
-            SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor= sharedPref.edit();
-            editor.putStringSet("dateList", set);
-            editor.commit();
-            writeToFile(journalText, getApplicationContext());
-            writeToFile2(titleText, getApplicationContext());
-        }
-
-
-
-
-        toNoteList.putExtra("EXTRA_TITLE_TEXT", titleText);
-
         startActivity(toNoteList);
-
-
     }
 
 
@@ -129,17 +119,10 @@ public void delete_button(){
         setContentView(R.layout.activity_write_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //extras
-        Bundle extras = getIntent().getExtras();
-        boolean isNew = extras.getBoolean("IS_NEW");
 
-        if(isNew==false){
-            EditText journal = (EditText) findViewById(content_write);
-            journal.append(readFromFile(getApplicationContext()));
 
-            EditText titleText = (EditText) findViewById(title_write);
-            titleText.append(readFromTitle(getApplicationContext()));
-        }
+
+
 
     }
 
@@ -163,7 +146,8 @@ public void delete_button(){
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_favorite) {
-delete_button();
+
+            //delete_button();
             return true;
         }
 
@@ -172,14 +156,11 @@ delete_button();
 
 
     //save note content to a file
-    private void writeToFile(String data,Context context) {
-        Bundle extras = getIntent().getExtras();
+    private void writeToFile(String data,Context context, String fileName) {
 
-            int position = extras.getInt("EXTRA_POSITION");
-            //The key argument here must match that used in the other activity
 
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileNumber(position), Context.MODE_PRIVATE));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
         }
@@ -280,18 +261,6 @@ delete_button();
 
 
 
-    //when back button is pressed
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(this,"Thanks for using application!!", Toast.LENGTH_SHORT).show();
-        finish();
-
-
-
-        return;
-    }
-
-
     //access the file content depending on the position
     public String fileNumber(int position){
         String file = "note"+position+".txt";
@@ -305,6 +274,12 @@ delete_button();
     }
 
 
+    private String removeSpaces(String string){
+        string=string.replace(" ", "");
+        string = string.trim();
+        string=string+".txt";
+        return string;
+    }
 
 
 }
