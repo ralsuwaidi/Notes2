@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,8 +24,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static android.widget.LinearLayout.VERTICAL;
 
 
 public class NotesActivity extends AppCompatActivity{
@@ -33,8 +40,12 @@ public class NotesActivity extends AppCompatActivity{
     public RecyclerView recyclerView;
     private NoteAdapter mAdapter;
     public static final String PREFS_NAME = "MyPrefsFile";
-    private int listSize;
+    public static int listSize;
     private boolean start;
+    public static final List<String> date=new ArrayList<>();
+    String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+    public static Set<String> set = new HashSet<String>();
+
 
     public NotesActivity(){
           start=true;
@@ -48,17 +59,21 @@ public class NotesActivity extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         //set up the recycler view
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_notes);
         mAdapter = new NoteAdapter(noteList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
         //get shared pref
-        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, 0);
-        listSize = sharedPref.getInt("listSize", 0);
+        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        listSize = sharedPref.getInt("listSize", MODE_PRIVATE);
+        Set d=sharedPref.getStringSet("dateList", set);
+
+
 
 
 
@@ -108,12 +123,20 @@ public class NotesActivity extends AppCompatActivity{
 
         //can use this space to populate note list
         noteList.clear();
+        date.addAll(d);
+
         while(start){
     for (int i = 0; i < listSize; i++) {
 
-        addNote(readFromTitle(getApplicationContext(),i), "date");
+        if (readFromTitle(getApplicationContext(),i).equals(null)||readFromTitle(getApplicationContext(),i).equals("")){
+
+        }else{
+            addNote(readFromTitle(getApplicationContext(),i), date.get(i));
+        }
+
     }
     start=false;
+
         }
 
     }
@@ -125,6 +148,7 @@ public class NotesActivity extends AppCompatActivity{
 
         mAdapter.notifyDataSetChanged();
     }
+
 
     //acess file title depending on the position
     private String titleNumber(int position){
