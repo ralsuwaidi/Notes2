@@ -12,6 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,8 +24,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,9 +45,10 @@ public class WriteNote extends AppCompatActivity {
     public static String TITLES_SET = "titlesSet";
     String EXTRA_POS = "recyclerViewPositionClicked";
 
-    public static List<String> titlesList = new ArrayList<>();
-    public static Set<String> titleStringSet = new HashSet<>();
+    List<String> titlesList = new ArrayList<>();
+    private Set<String> titleStringSet = new LinkedHashSet<>();
 
+    Gson gson = new Gson();
 
     public void delete_button() {
 
@@ -97,9 +104,12 @@ public class WriteNote extends AppCompatActivity {
             SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
 
-            titleStringSet.addAll(titlesList);
-            editor.putStringSet(TITLES_SET, titleStringSet);
-            editor.commit();
+
+            //titleStringSet.addAll(titlesList);
+            String json = gson.toJson(titlesList);
+            //ArrayList obj = gson.fromJson(json, ArrayList.class);
+            editor.putString(TITLES_SET, json);
+            editor.apply();
 
             // 30/07/2017 make a new save file with title as the name of the file, put content inside it
             String titleFileName = removeSpaces(titleText);
@@ -127,7 +137,8 @@ public class WriteNote extends AppCompatActivity {
         int position = extras.getInt(EXTRA_POS);
 
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        Set titlesSet = sharedPref.getStringSet(TITLES_SET, null);
+        String json = sharedPref.getString(TITLES_SET, null);
+        ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
 
 
         if (titlesSet != null) {
@@ -241,42 +252,6 @@ public class WriteNote extends AppCompatActivity {
         return ret;
     }
 
-
-    //read title from the file
-    public String readFromTitle(Context context) {
-
-        String ret = "";
-        Bundle extras = getIntent().getExtras();
-
-        int position = extras.getInt("EXTRA_POSITION");
-
-
-        try {
-            InputStream inputStream = context.openFileInput(titleNumber(position));
-
-            if (inputStream != null) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ((receiveString = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                ret = stringBuilder.toString();
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
-
-        return ret;
-    }
-
-
     //access the file content depending on the position
     public String fileNumber(int position) {
         String file = "note" + position + ".txt";
@@ -295,6 +270,10 @@ public class WriteNote extends AppCompatActivity {
         string = string.trim();
         string = string + ".txt";
         return string;
+    }
+
+    private void saveJsonToPref(){
+
     }
 
 

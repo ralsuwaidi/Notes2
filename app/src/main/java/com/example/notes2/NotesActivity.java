@@ -16,6 +16,7 @@ import android.view.View;
 import com.example.notes2.Notes.ItemClickSupport;
 import com.example.notes2.Notes.Note;
 import com.example.notes2.Notes.NoteAdapter;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -41,8 +42,9 @@ public class NotesActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     String EXTRA_POS = "recyclerViewPositionClicked";
     private NoteAdapter mAdapter;
-    private boolean start;
-    private List<String> titlesList = WriteNote.titlesList;
+    private List<String> titlesList = new ArrayList<>();
+    Set titlesSet=new LinkedHashSet();
+    Gson gson = new Gson();
 
 
     @Override
@@ -64,7 +66,9 @@ public class NotesActivity extends AppCompatActivity {
 
         //get shared pref
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        Set titlesSet = sharedPref.getStringSet(WriteNote.TITLES_SET, null);
+        //Set titlesSet = sharedPref.getStringSet(WriteNote.TITLES_SET, null);
+        String json =sharedPref.getString(WriteNote.TITLES_SET,null);
+        ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
 
         //populate List
         if (titlesSet != null) {
@@ -167,6 +171,7 @@ public class NotesActivity extends AppCompatActivity {
 
         return ret;
     }
+
 
 
 }
