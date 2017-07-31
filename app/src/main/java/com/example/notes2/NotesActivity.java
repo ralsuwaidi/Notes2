@@ -79,8 +79,9 @@ public class NotesActivity extends AppCompatActivity{
         SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         Set titlesSet=sharedPref.getStringSet(WriteNote.TITLES_SET, null);
 
+        //populate List
         if(titlesSet!=null){
-            titlesList.clear();
+            noteList.clear();
             titlesList.addAll(titlesSet);
             for (int i=0; i<titlesList.size();i++){
                 addNote(titlesList.get(i),"dd");

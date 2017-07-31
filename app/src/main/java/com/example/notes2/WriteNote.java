@@ -90,25 +90,35 @@ public void delete_button(){
     //when the save button is clicked
     public void save_content(View view) {
 
+        // TODO: 31/07/2017 dont save if the title is empty
+
+
         // 30/07/2017  save title text to string and add to string array
         EditText titleEditText = (EditText) findViewById(title_write);
         EditText contentEditText = (EditText) findViewById(content_write);
         titleText = titleEditText.getText().toString();
         contentText=contentEditText.getText().toString();
 
-        titlesList.add(titleText);
+        if(!titleText.isEmpty()){
+            titlesList.add(titleText);
 
-        // 30/07/2017 save to a shared pref set
-        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor= sharedPref.edit();
-        Set<String> titleStringSet = new HashSet<>();
-        titleStringSet.addAll(titlesList);
-        editor.putStringSet(TITLES_SET, titleStringSet);
-        editor.commit();
+            // 30/07/2017 save to a shared pref set
+            SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor= sharedPref.edit();
+            Set<String> titleStringSet = new HashSet<>();
+            titleStringSet.addAll(titlesList);
+            editor.putStringSet(TITLES_SET, titleStringSet);
+            editor.commit();
 
-        // 30/07/2017 make a new save file with title as the name of the file, put content inside it
-        String titleFileName=removeSpaces(titleText);
-        writeToFile(contentText, this, titleFileName);
+            // 30/07/2017 make a new save file with title as the name of the file, put content inside it
+            String titleFileName=removeSpaces(titleText);
+            writeToFile(contentText, this, titleFileName);
+        }
+
+
+
+
+
 
 
 
@@ -127,7 +137,7 @@ public void delete_button(){
         setSupportActionBar(toolbar);
 
 
-        // TODO: 31/07/2017 show saved file if recycler view is clicked
+        // 31/07/2017 show saved file if recycler view is clicked
         Bundle extras = getIntent().getExtras();
         int position = extras.getInt(EXTRA_POS);
 
