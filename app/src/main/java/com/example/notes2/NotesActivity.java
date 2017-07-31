@@ -49,6 +49,7 @@ public class NotesActivity extends AppCompatActivity{
     public static final List<String> date=new ArrayList<>();
     public static Set<String> titleSet = new HashSet<String>();
     private List<String> titlesList = new ArrayList<>();
+    String EXTRA_POS="recyclerViewPositionClicked";
 
 
     public NotesActivity(){
@@ -73,14 +74,19 @@ public class NotesActivity extends AppCompatActivity{
         recyclerView.setAdapter(mAdapter);
 
 
+
         //get shared pref
         SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        Set titlesSet=sharedPref.getStringSet(WriteNote.TITLES_SET, titleSet);
-        titlesList.addAll(titlesSet);
+        Set titlesSet=sharedPref.getStringSet(WriteNote.TITLES_SET, null);
 
-        for (int i=0; i<titlesList.size();i++){
-            addNote(titlesList.get(i),"dd");
+        if(titlesSet!=null){
+            titlesList.clear();
+            titlesList.addAll(titlesSet);
+            for (int i=0; i<titlesList.size();i++){
+                addNote(titlesList.get(i),"dd");
+            }
         }
+
 
 
 
@@ -94,7 +100,7 @@ public class NotesActivity extends AppCompatActivity{
 
 
                 Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
-                writeIntent.putExtra("EXTRA_POSITION", position);
+                writeIntent.putExtra(EXTRA_POS, position);
                 startActivity(writeIntent);
 
 
@@ -120,6 +126,7 @@ public class NotesActivity extends AppCompatActivity{
                 //start a new activity
                 //int noteSize=listSize;
                 Intent writeIntent= new Intent(NotesActivity.this, WriteNote.class);
+                writeIntent.putExtra(EXTRA_POS, titlesList.size());
                 //writeIntent.putExtra("EXTRA_POSITION", noteSize);
 
                 startActivity(writeIntent);

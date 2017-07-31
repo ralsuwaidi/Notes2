@@ -40,15 +40,19 @@ import static com.example.notes2.R.id.title_write;
 public class WriteNote extends AppCompatActivity {
 
     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-    List<String> titlesList = new ArrayList<>();
+
     String titleText;
     String contentText;
-    Set<String> titleStringSet;
+
     public static String TITLES_SET="titlesSet";
+    String EXTRA_POS="recyclerViewPositionClicked";
+
+    List<String> titlesList = new ArrayList<>();
 
 
 public void delete_button(){
 
+    // TODO: 31/07/2017 delete saved file and remove from title list
     /*
     //get position
     Bundle extras = getIntent().getExtras();
@@ -91,12 +95,14 @@ public void delete_button(){
         EditText contentEditText = (EditText) findViewById(content_write);
         titleText = titleEditText.getText().toString();
         contentText=contentEditText.getText().toString();
+
         titlesList.add(titleText);
 
         // 30/07/2017 save to a shared pref set
-        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor= sharedPref.edit();
-        Set<String> titleStringSet = new HashSet<>(titlesList);
+        Set<String> titleStringSet = new HashSet<>();
+        titleStringSet.addAll(titlesList);
         editor.putStringSet(TITLES_SET, titleStringSet);
         editor.commit();
 
@@ -119,6 +125,33 @@ public void delete_button(){
         setContentView(R.layout.activity_write_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+        // TODO: 31/07/2017 show saved file if recycler view is clicked
+        Bundle extras = getIntent().getExtras();
+        int position = extras.getInt(EXTRA_POS);
+
+        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        Set titlesSet=sharedPref.getStringSet(TITLES_SET, null);
+
+
+        if(titlesSet!=null) {
+
+            titlesList.clear();
+            titlesList.addAll(titlesSet);
+            if (position < titlesList.size()) {
+
+
+                EditText titleEditText = (EditText) findViewById(title_write);
+
+            EditText contentEditText = (EditText) findViewById(content_write);
+
+            titleEditText.setText(titlesList.get(position));
+        }
+
+        }
+
+
 
 
 
