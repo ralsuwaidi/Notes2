@@ -14,8 +14,6 @@ import android.widget.EditText;
 
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,9 +22,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +41,7 @@ public class WriteNote extends AppCompatActivity {
     public static String TITLES_SET = "titlesSet";
     String EXTRA_POS = "recyclerViewPositionClicked";
 
-    List<String> titlesList = new ArrayList<>();
+    ArrayList<String> titlesList = new ArrayList<>();
     private Set<String> titleStringSet = new LinkedHashSet<>();
 
     Gson gson = new Gson();
@@ -113,7 +109,7 @@ public class WriteNote extends AppCompatActivity {
 
             // 30/07/2017 make a new save file with title as the name of the file, put content inside it
             String titleFileName = removeSpaces(titleText);
-            writeToFile(contentText, this, titleFileName);
+            writeToFile(contentText, getApplicationContext(), titleFileName);
         }
 
 
@@ -136,6 +132,7 @@ public class WriteNote extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         int position = extras.getInt(EXTRA_POS);
 
+        //shared pref
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String json = sharedPref.getString(TITLES_SET, null);
         ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
@@ -153,6 +150,8 @@ public class WriteNote extends AppCompatActivity {
                 EditText contentEditText = (EditText) findViewById(content_write);
 
                 titleEditText.setText(titlesList.get(position));
+
+                contentEditText.setText(checkString(position));
             }
 
         }
@@ -219,12 +218,10 @@ public class WriteNote extends AppCompatActivity {
 
 
     //read content from the file
-    private String readFromFile(Context context) {
+    private String readFromFile(Context context, Integer position) {
 
         String ret = "";
-        Bundle extras = getIntent().getExtras();
 
-        int position = extras.getInt("EXTRA_POSITION");
 
 
         try {
@@ -254,8 +251,25 @@ public class WriteNote extends AppCompatActivity {
 
     //access the file content depending on the position
     public String fileNumber(int position) {
-        String file = "note" + position + ".txt";
+        SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String json = sharedPref.getString(TITLES_SET, null);
+        ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
+        List<String> titleStringSet=new ArrayList<>();
+        titleStringSet.addAll(titlesSet);
+
+        String file=titleStringSet.get(position);
+
+        file = removeSpaces(file);
         return file;
+    }
+
+    private String checkString(int position){
+
+
+
+        return readFromFile(this, position);
+
+
     }
 
     //acess file title depending on the position
@@ -272,7 +286,7 @@ public class WriteNote extends AppCompatActivity {
         return string;
     }
 
-    private void saveJsonToPref(){
+    private void saveJsonToPref() {
 
     }
 
