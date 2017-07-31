@@ -6,26 +6,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.example.notes2.Notes.Note;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,15 +36,15 @@ public class WriteNote extends AppCompatActivity {
     String titleText;
     String contentText;
 
-    public static String TITLES_SET="titlesSet";
-    String EXTRA_POS="recyclerViewPositionClicked";
+    public static String TITLES_SET = "titlesSet";
+    String EXTRA_POS = "recyclerViewPositionClicked";
 
     List<String> titlesList = new ArrayList<>();
 
 
-public void delete_button(){
+    public void delete_button() {
 
-    // TODO: 31/07/2017 delete saved file and remove from title list
+        // TODO: 31/07/2017 delete saved file and remove from title list
     /*
     //get position
     Bundle extras = getIntent().getExtras();
@@ -81,49 +73,41 @@ public void delete_button(){
     NotesActivity.noteList.remove(position);
      */
 
-    Intent toNoteList= new Intent(WriteNote.this, NotesActivity.class);
-    startActivity(toNoteList);
-}
-
+        Intent toNoteList = new Intent(WriteNote.this, NotesActivity.class);
+        startActivity(toNoteList);
+    }
 
 
     //when the save button is clicked
     public void save_content(View view) {
-
-        // TODO: 31/07/2017 dont save if the title is empty
 
 
         // 30/07/2017  save title text to string and add to string array
         EditText titleEditText = (EditText) findViewById(title_write);
         EditText contentEditText = (EditText) findViewById(content_write);
         titleText = titleEditText.getText().toString();
-        contentText=contentEditText.getText().toString();
+        contentText = contentEditText.getText().toString();
 
-        if(!titleText.isEmpty()){
+        // 31/07/2017 dont save if the title is empty
+        if (!titleText.isEmpty()) {
             titlesList.add(titleText);
 
             // 30/07/2017 save to a shared pref set
-            SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor= sharedPref.edit();
+            SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
             Set<String> titleStringSet = new HashSet<>();
             titleStringSet.addAll(titlesList);
             editor.putStringSet(TITLES_SET, titleStringSet);
-            editor.commit();
+            editor.apply();
 
             // 30/07/2017 make a new save file with title as the name of the file, put content inside it
-            String titleFileName=removeSpaces(titleText);
+            String titleFileName = removeSpaces(titleText);
             writeToFile(contentText, this, titleFileName);
         }
 
 
-
-
-
-
-
-
         // 30/07/2017 start the new activity to return to the main list menu
-        Intent toNoteList= new Intent(WriteNote.this, NotesActivity.class);
+        Intent toNoteList = new Intent(WriteNote.this, NotesActivity.class);
         startActivity(toNoteList);
     }
 
@@ -141,11 +125,11 @@ public void delete_button(){
         Bundle extras = getIntent().getExtras();
         int position = extras.getInt(EXTRA_POS);
 
-        SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        Set titlesSet=sharedPref.getStringSet(TITLES_SET, null);
+        SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        Set titlesSet = sharedPref.getStringSet(TITLES_SET, null);
 
 
-        if(titlesSet!=null) {
+        if (titlesSet != null) {
 
             titlesList.clear();
             titlesList.addAll(titlesSet);
@@ -154,17 +138,12 @@ public void delete_button(){
 
                 EditText titleEditText = (EditText) findViewById(title_write);
 
-            EditText contentEditText = (EditText) findViewById(content_write);
+                EditText contentEditText = (EditText) findViewById(content_write);
 
-            titleEditText.setText(titlesList.get(position));
+                titleEditText.setText(titlesList.get(position));
+            }
+
         }
-
-        }
-
-
-
-
-
 
 
     }
@@ -177,7 +156,6 @@ public void delete_button(){
 
         return super.onCreateOptionsMenu(menu);
     }
-
 
 
     @Override
@@ -199,21 +177,20 @@ public void delete_button(){
 
 
     //save note content to a file
-    private void writeToFile(String data,Context context, String fileName) {
+    private void writeToFile(String data, Context context, String fileName) {
 
 
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
 
     //save title to a file
-    private void writeToFile2(String data,Context context) {
+    private void writeToFile2(String data, Context context) {
         Bundle extras = getIntent().getExtras();
 
         int position = extras.getInt("EXTRA_POSITION");
@@ -223,8 +200,7 @@ public void delete_button(){
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(titleNumber(position), Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
@@ -242,21 +218,20 @@ public void delete_button(){
         try {
             InputStream inputStream = context.openFileInput(fileNumber(position));
 
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
                 StringBuilder stringBuilder = new StringBuilder();
 
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                while ((receiveString = bufferedReader.readLine()) != null) {
                     stringBuilder.append(receiveString).append("\n");
                 }
 
                 inputStream.close();
                 ret = stringBuilder.toString();
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
@@ -264,7 +239,6 @@ public void delete_button(){
 
         return ret;
     }
-
 
 
     //read title from the file
@@ -279,21 +253,20 @@ public void delete_button(){
         try {
             InputStream inputStream = context.openFileInput(titleNumber(position));
 
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
                 StringBuilder stringBuilder = new StringBuilder();
 
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                while ((receiveString = bufferedReader.readLine()) != null) {
                     stringBuilder.append(receiveString);
                 }
 
                 inputStream.close();
                 ret = stringBuilder.toString();
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
@@ -303,24 +276,23 @@ public void delete_button(){
     }
 
 
-
     //access the file content depending on the position
-    public String fileNumber(int position){
-        String file = "note"+position+".txt";
+    public String fileNumber(int position) {
+        String file = "note" + position + ".txt";
         return file;
     }
 
     //acess file title depending on the position
-    public String titleNumber(int position){
-        String file = "title"+position+".txt";
+    public String titleNumber(int position) {
+        String file = "title" + position + ".txt";
         return file;
     }
 
 
-    private String removeSpaces(String string){
-        string=string.replace(" ", "");
+    private String removeSpaces(String string) {
+        string = string.replace(" ", "");
         string = string.trim();
-        string=string+".txt";
+        string = string + ".txt";
         return string;
     }
 
