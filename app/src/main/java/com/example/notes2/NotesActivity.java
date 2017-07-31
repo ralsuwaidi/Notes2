@@ -38,8 +38,6 @@ public class NotesActivity extends AppCompatActivity {
     //private folder setup
     public static final String PREFS_NAME = "MyPrefsFile";
     public static final List<String> date = new ArrayList<>();
-    public static int listSize;
-    public static LinkedHashSet<String> titleSet = new LinkedHashSet<>();
     public RecyclerView recyclerView;
     String EXTRA_POS = "recyclerViewPositionClicked";
     private NoteAdapter mAdapter;
