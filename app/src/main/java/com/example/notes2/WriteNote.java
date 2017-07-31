@@ -95,8 +95,8 @@ public class WriteNote extends AppCompatActivity {
             // 30/07/2017 save to a shared pref set
             SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            Set<String> titleStringSet = new HashSet<>();
-            titleStringSet.addAll(titlesList);
+            Set<String> titleStringSet = new HashSet<>(titlesList);
+            //titleStringSet.addAll(titlesList);
             editor.putStringSet(TITLES_SET, titleStringSet);
             editor.apply();
 

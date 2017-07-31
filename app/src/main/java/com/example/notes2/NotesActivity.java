@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class NotesActivity extends AppCompatActivity {
     public static final String PREFS_NAME = "MyPrefsFile";
     public static final List<String> date = new ArrayList<>();
     public static int listSize;
-    public static Set<String> titleSet = new HashSet<String>();
+    public static LinkedHashSet<String> titleSet = new LinkedHashSet<>();
     public RecyclerView recyclerView;
     String EXTRA_POS = "recyclerViewPositionClicked";
     private NoteAdapter mAdapter;
@@ -57,7 +58,7 @@ public class NotesActivity extends AppCompatActivity {
         //set up the recycler view
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_notes);
         mAdapter = new NoteAdapter(noteList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, true);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
@@ -111,7 +112,7 @@ public class NotesActivity extends AppCompatActivity {
 
 
                 //start a new activity
-                //int noteSize=listSize;
+
                 Intent writeIntent = new Intent(NotesActivity.this, WriteNote.class);
                 writeIntent.putExtra(EXTRA_POS, titlesList.size());
                 //writeIntent.putExtra("EXTRA_POSITION", noteSize);
