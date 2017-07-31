@@ -42,7 +42,7 @@ public class NotesActivity extends AppCompatActivity {
     String EXTRA_POS = "recyclerViewPositionClicked";
     private NoteAdapter mAdapter;
     private boolean start;
-    private List<String> titlesList = new ArrayList<>();
+    private List<String> titlesList = WriteNote.titlesList;
 
 
     @Override

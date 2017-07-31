@@ -39,7 +39,8 @@ public class WriteNote extends AppCompatActivity {
     public static String TITLES_SET = "titlesSet";
     String EXTRA_POS = "recyclerViewPositionClicked";
 
-    List<String> titlesList = new ArrayList<>();
+    public static List<String> titlesList = new ArrayList<>();
+    public static Set<String> titleStringSet = new HashSet<>();
 
 
     public void delete_button() {
@@ -95,10 +96,10 @@ public class WriteNote extends AppCompatActivity {
             // 30/07/2017 save to a shared pref set
             SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            Set<String> titleStringSet = new HashSet<>(titlesList);
-            //titleStringSet.addAll(titlesList);
+
+            titleStringSet.addAll(titlesList);
             editor.putStringSet(TITLES_SET, titleStringSet);
-            editor.apply();
+            editor.commit();
 
             // 30/07/2017 make a new save file with title as the name of the file, put content inside it
             String titleFileName = removeSpaces(titleText);
