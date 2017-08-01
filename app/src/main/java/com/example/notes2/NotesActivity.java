@@ -56,7 +56,7 @@ public class NotesActivity extends AppCompatActivity {
         //set up the recycler view
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_notes);
         mAdapter = new NoteAdapter(noteList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), VERTICAL, true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +24,7 @@ import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.example.notes2.NotesActivity.PREFS_NAME;
 import static com.example.notes2.R.id.content_write;
@@ -41,45 +40,49 @@ public class WriteNote extends AppCompatActivity {
 
     ArrayList<String> titlesList = new ArrayList<>();
     Gson gson = new Gson();
-    private Set<String> titleStringSet = new LinkedHashSet<>();
 
+    //DELETE BUTTON is clicked
     public void delete_button() {
 
-        // TODO: 31/07/2017 delete saved file and remove from title list
-    /*
-    //get position
-    Bundle extras = getIntent().getExtras();
-    int position = extras.getInt("EXTRA_POSITION");
-     */
+        //delete title, content from file
+        //get title text
+        File dir = getFilesDir();
+        EditText titleEditText = (EditText) findViewById(title_write);
+        titleText = titleEditText.getText().toString();
+        if (!titleText.isEmpty()) {
 
-    /*
-    //delete title, content from file
-    File dir = getFilesDir();
-    File fileTitle = new File(dir, "title"+position+".txt");
-    File fileContent = new File(dir, "note"+position+".txt");
-    fileTitle.delete();
-    fileContent.delete();
-     */
+            //get title array from shared pref
+            SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            String json = sharedPref.getString(TITLES_SET, null);
+            ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
 
-    /*
-    //decrease list size
-    SharedPreferences sharedPref= getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-    SharedPreferences.Editor editor= sharedPref.edit();
-    editor.putInt("listSize", NotesActivity.listSize-1);
-    editor.commit();
-     */
+            //get position clicked
+            Bundle extras = getIntent().getExtras();
+            int position = extras.getInt(EXTRA_POS);
 
-    /*
-    NotesActivity.date.remove(position);
-    NotesActivity.noteList.remove(position);
-     */
+            //get file and delete it
+            File fileTitle = new File(dir, fileNumber(position));
+            fileTitle.delete();
 
+            //remove title from list of titles
+            titlesSet.remove(position);
+            titlesList.clear();
+            titlesList.addAll(titlesSet);
+
+            //save new list of titles
+            SharedPreferences.Editor editor = sharedPref.edit();
+            json = gson.toJson(titlesList);
+            editor.putString(TITLES_SET, json);
+            editor.apply();
+        }
+
+        //start new intent
         Intent toNoteList = new Intent(WriteNote.this, NotesActivity.class);
         startActivity(toNoteList);
     }
 
 
-    //when the save button is clicked
+    //SAVE BUTTON is clicked
     public void save_content(View view) {
 
 
@@ -197,22 +200,6 @@ public class WriteNote extends AppCompatActivity {
         }
     }
 
-    //save title to a file
-    private void writeToFile2(String data, Context context) {
-        Bundle extras = getIntent().getExtras();
-
-        int position = extras.getInt("EXTRA_POSITION");
-        //The key argument here must match that used in the other activity
-
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(titleNumber(position), Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
 
     //read content from the file
     private String readFromFile(Context context, Integer position) {
@@ -267,22 +254,11 @@ public class WriteNote extends AppCompatActivity {
 
     }
 
-    //acess file title depending on the position
-    public String titleNumber(int position) {
-        String file = "title" + position + ".txt";
-        return file;
-    }
-
-
     private String removeSpaces(String string) {
         string = string.replace(" ", "");
         string = string.trim();
         string = string + ".txt";
         return string;
-    }
-
-    private void saveJsonToPref() {
-
     }
 
 
