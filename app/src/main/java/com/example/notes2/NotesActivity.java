@@ -37,7 +37,6 @@ public class NotesActivity extends AppCompatActivity {
     public static final List<Note> noteList = new ArrayList<>();
     //private folder setup
     public static final String PREFS_NAME = "MyPrefsFile";
-    public static final List<String> date = new ArrayList<>();
     public RecyclerView recyclerView;
     String EXTRA_POS = "recyclerViewPositionClicked";
     Gson gson = new Gson();

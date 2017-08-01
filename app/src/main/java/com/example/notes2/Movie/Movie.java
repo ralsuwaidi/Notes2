@@ -1,8 +1,6 @@
 package com.example.notes2.Movie;
 
-/**
- * Created by Rashid on 25/07/2017.
- */
+
 
 public class Movie {
     private String title, genre, year;

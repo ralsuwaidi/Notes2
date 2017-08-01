@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.example.notes2.NotesActivity.PREFS_NAME;
 import static com.example.notes2.R.id.content_write;
+import static com.example.notes2.R.id.home;
 import static com.example.notes2.R.id.title_write;
 
 public class WriteNote extends AppCompatActivity {
@@ -100,6 +101,7 @@ public class WriteNote extends AppCompatActivity {
         titleText = titleEditText.getText().toString();
         contentText = contentEditText.getText().toString();
 
+
         // 31/07/2017 dont save if the title is empty
         if (!titleText.isEmpty()) {
 
@@ -137,6 +139,8 @@ public class WriteNote extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         // 31/07/2017 show saved file if recycler view is clicked
         Bundle extras = getIntent().getExtras();
@@ -173,6 +177,7 @@ public class WriteNote extends AppCompatActivity {
 
     }
 
+
     //create action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -197,7 +202,14 @@ public class WriteNote extends AppCompatActivity {
             return true;
         }
 
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        save_content(findViewById(home));
+        return true;
     }
 
 
