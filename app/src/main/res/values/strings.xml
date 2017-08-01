@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Notes 2</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="app_name">Notes</string>
     <string name="title_activity_notes">Notes</string>
     <string name="title_activity_write_note"> </string>
     <string name="write_note_title_hint">Title</string>
