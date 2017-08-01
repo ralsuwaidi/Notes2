@@ -22,7 +22,7 @@ public class Movie {
         this.title = name;
     }
 
-    private String getYear() {
+    public String getYear() {
         return year;
     }
 
