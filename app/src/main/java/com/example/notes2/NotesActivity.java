@@ -44,6 +44,7 @@ public class NotesActivity extends AppCompatActivity {
     Gson gson = new Gson();
     private NoteAdapter mAdapter;
     private List<String> titlesList = new ArrayList<>();
+    private List<String> dateList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,15 +67,18 @@ public class NotesActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         //Set titlesSet = sharedPref.getStringSet(WriteNote.TITLES_SET, null);
         String json = sharedPref.getString(WriteNote.TITLES_SET, null);
+        String json2 = sharedPref.getString(WriteNote.DATE_SET, null);
         ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
+        ArrayList dateSet = gson.fromJson(json2, ArrayList.class);
 
         //populate List
         if (titlesSet != null) {
             noteList.clear();
             titlesList.addAll(titlesSet);
+            dateList.addAll(dateSet);
             for (int i = 0; i < titlesList.size(); i++) {
 
-                addNote(titlesList.get(i), "dd");
+                addNote(titlesList.get(i), dateList.get(i));
             }
         }
 
@@ -112,10 +116,9 @@ public class NotesActivity extends AppCompatActivity {
 
 
                 //start a new activity
-
                 Intent writeIntent = new Intent(NotesActivity.this, WriteNote.class);
                 writeIntent.putExtra(EXTRA_POS, titlesList.size());
-                //writeIntent.putExtra("EXTRA_POSITION", noteSize);
+
 
                 startActivity(writeIntent);
 

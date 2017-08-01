@@ -33,12 +33,15 @@ import static com.example.notes2.R.id.title_write;
 public class WriteNote extends AppCompatActivity {
 
     public static String TITLES_SET = "titlesSet";
-    String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+    public static String DATE_SET = "datesSet";
+    String currentDateString = DateFormat.getDateInstance().format(new Date());
+
     String titleText;
     String contentText;
     String EXTRA_POS = "recyclerViewPositionClicked";
 
     ArrayList<String> titlesList = new ArrayList<>();
+    ArrayList<String> dateList = new ArrayList<>();
     Gson gson = new Gson();
 
     //DELETE BUTTON is clicked
@@ -94,16 +97,18 @@ public class WriteNote extends AppCompatActivity {
 
         // 31/07/2017 dont save if the title is empty
         if (!titleText.isEmpty()) {
+
             titlesList.add(titleText);
+            dateList.add(currentDateString);
 
             // 30/07/2017 save to a shared pref set
             SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
 
 
-            //titleStringSet.addAll(titlesList);
             String json = gson.toJson(titlesList);
-            //ArrayList obj = gson.fromJson(json, ArrayList.class);
+            String json2 = gson.toJson(dateList);
+            editor.putString(DATE_SET, json2);
             editor.putString(TITLES_SET, json);
             editor.apply();
 
@@ -135,13 +140,17 @@ public class WriteNote extends AppCompatActivity {
         //shared pref
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String json = sharedPref.getString(TITLES_SET, null);
+        String json2 = sharedPref.getString(DATE_SET, null);
         ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
+        ArrayList dateSet = gson.fromJson(json2, ArrayList.class);
 
 
         if (titlesSet != null) {
 
             titlesList.clear();
             titlesList.addAll(titlesSet);
+            dateList.clear();
+            dateList.addAll(dateSet);
             if (position < titlesList.size()) {
 
 
