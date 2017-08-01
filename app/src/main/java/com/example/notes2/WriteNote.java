@@ -33,18 +33,15 @@ import static com.example.notes2.R.id.title_write;
 
 public class WriteNote extends AppCompatActivity {
 
+    public static String TITLES_SET = "titlesSet";
     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-
     String titleText;
     String contentText;
-
-    public static String TITLES_SET = "titlesSet";
     String EXTRA_POS = "recyclerViewPositionClicked";
 
     ArrayList<String> titlesList = new ArrayList<>();
-    private Set<String> titleStringSet = new LinkedHashSet<>();
-
     Gson gson = new Gson();
+    private Set<String> titleStringSet = new LinkedHashSet<>();
 
     public void delete_button() {
 
@@ -179,7 +176,7 @@ public class WriteNote extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_favorite) {
 
-            //delete_button();
+            delete_button();
             return true;
         }
 
@@ -223,7 +220,6 @@ public class WriteNote extends AppCompatActivity {
         String ret = "";
 
 
-
         try {
             InputStream inputStream = context.openFileInput(fileNumber(position));
 
@@ -254,17 +250,16 @@ public class WriteNote extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String json = sharedPref.getString(TITLES_SET, null);
         ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
-        List<String> titleStringSet=new ArrayList<>();
+        List<String> titleStringSet = new ArrayList<>();
         titleStringSet.addAll(titlesSet);
 
-        String file=titleStringSet.get(position);
+        String file = titleStringSet.get(position);
 
         file = removeSpaces(file);
         return file;
     }
 
-    private String checkString(int position){
-
+    private String checkString(int position) {
 
 
         return readFromFile(this, position);
