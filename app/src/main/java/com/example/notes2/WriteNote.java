@@ -57,7 +57,9 @@ public class WriteNote extends AppCompatActivity {
             //get title array from shared pref
             SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             String json = sharedPref.getString(TITLES_SET, null);
+            String json2 = sharedPref.getString(DATE_SET, null);
             ArrayList titlesSet = gson.fromJson(json, ArrayList.class);
+            ArrayList dateSet = gson.fromJson(json2, ArrayList.class);
 
             //get position clicked
             Bundle extras = getIntent().getExtras();
@@ -69,8 +71,11 @@ public class WriteNote extends AppCompatActivity {
 
             //remove title from list of titles
             titlesSet.remove(position);
+            dateSet.remove(position);
             titlesList.clear();
             titlesList.addAll(titlesSet);
+            dateList.clear();
+            dateList.addAll(dateSet);
 
             //save new list of titles
             SharedPreferences.Editor editor = sharedPref.edit();

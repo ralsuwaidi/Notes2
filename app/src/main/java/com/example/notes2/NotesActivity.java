@@ -40,7 +40,6 @@ public class NotesActivity extends AppCompatActivity {
     public static final List<String> date = new ArrayList<>();
     public RecyclerView recyclerView;
     String EXTRA_POS = "recyclerViewPositionClicked";
-    Set titlesSet = new LinkedHashSet();
     Gson gson = new Gson();
     private NoteAdapter mAdapter;
     private List<String> titlesList = new ArrayList<>();
