@@ -94,6 +94,7 @@ public class WriteNote extends AppCompatActivity {
     //SAVE BUTTON is clicked
     public void save_content(View view) {
 
+        // TODO: 01/08/2017 dont save file to new file if they have the same title
 
         // 30/07/2017  save title text to string and add to string array
         EditText titleEditText = (EditText) findViewById(title_write);
@@ -105,8 +106,20 @@ public class WriteNote extends AppCompatActivity {
         // 31/07/2017 dont save if the title is empty
         if (!titleText.isEmpty()) {
 
-            titlesList.add(titleText);
-            dateList.add(currentDateString);
+
+
+            // 31/07/2017 show saved file if recycler view is clicked
+            Bundle extras = getIntent().getExtras();
+            int position = extras.getInt(EXTRA_POS);
+            
+            
+                
+            
+            if(!titlesList.get(titlesList.size()-1).equals(titleText)){
+                titlesList.add(titleText);
+                dateList.add(currentDateString);
+            }
+           
 
             // 30/07/2017 save to a shared pref set
             SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -140,6 +153,8 @@ public class WriteNote extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // TODO: 01/08/2017 change editview to textview on click 
 
 
         // 31/07/2017 show saved file if recycler view is clicked
