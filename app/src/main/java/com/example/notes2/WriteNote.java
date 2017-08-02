@@ -107,19 +107,16 @@ public class WriteNote extends AppCompatActivity {
         if (!titleText.isEmpty()) {
 
 
-
             // 31/07/2017 show saved file if recycler view is clicked
             Bundle extras = getIntent().getExtras();
             int position = extras.getInt(EXTRA_POS);
-            
-            
-                
-            
-            if(!titlesList.get(titlesList.size()-1).equals(titleText)){
+
+
+            if (!titlesList.get(titlesList.size() - 1).equals(titleText)) {
                 titlesList.add(titleText);
                 dateList.add(currentDateString);
             }
-           
+
 
             // 30/07/2017 save to a shared pref set
             SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -176,14 +173,11 @@ public class WriteNote extends AppCompatActivity {
             dateList.clear();
             dateList.addAll(dateSet);
             if (position < titlesList.size()) {
-
-
+                
                 EditText titleEditText = (EditText) findViewById(title_write);
-
                 EditText contentEditText = (EditText) findViewById(content_write);
 
                 titleEditText.setText(titlesList.get(position));
-
                 contentEditText.setText(checkString(position));
             }
 
